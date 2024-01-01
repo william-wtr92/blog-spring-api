@@ -29,7 +29,14 @@ public class PostController {
     }
 
     @GetMapping("{id}")
-    public PostDto getPostById(@PathVariable("id") Long postId){
-        return postService.getPostById(postId);
+    public ResponseEntity<PostDto> getPostById(@PathVariable("id") Long postId){
+        return ResponseEntity.ok(postService.getPostById(postId));
+    }
+
+    @PutMapping("{id}")
+    public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto, @PathVariable("id") Long postId){
+        PostDto postResponse = postService.updatePost(postDto, postId);
+
+        return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 }

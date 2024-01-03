@@ -4,6 +4,7 @@ import com.springboot.blog.dto.CommentDto;
 import com.springboot.blog.dto.CommentResponse;
 import com.springboot.blog.entity.Comment;
 import com.springboot.blog.entity.Post;
+import com.springboot.blog.exception.BlogApiException;
 import com.springboot.blog.exception.ResourceNotFoundException;
 import com.springboot.blog.repository.CommentRepository;
 import com.springboot.blog.repository.PostRepository;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -75,6 +77,22 @@ public class CommentServiceImpl implements CommentService {
         commentResponse.setLast(comments.isLast());
 
         return commentResponse;
+    }
+
+    @Override
+    public CommentDto getCommentById(Long postId, Long commentId) {
+        // Checking if postId provided is existing
+        Post post = postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "id", postId));
+
+        // Checking if commentId provided is existing
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment", "id", commentId));
+
+        // Throw error if the post_id of comment is different of the post id return by the variable below
+        if(!comment.getPost().getId().equals(post.getId())) {
+            throw new BlogApiException(HttpStatus.BAD_REQUEST, "Comment does not belong to post");
+        }
+
+        return mapToDto(comment);
     }
 
     // Convert Entity into DTO

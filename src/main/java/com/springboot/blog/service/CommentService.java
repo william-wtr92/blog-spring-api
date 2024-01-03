@@ -8,4 +8,5 @@ public interface CommentService {
     CommentResponse getCommentsByPostId(Long postId, int pageNo, int pageSize, String sortOrder, String sortBy);
     CommentDto getCommentById(Long postId, Long commentId);
     CommentDto updateComment(CommentDto commentDto,Long postId, Long commentId);
+    void deleteComment(Long postId, Long commentId);
 }

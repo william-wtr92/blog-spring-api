@@ -9,6 +9,7 @@ import com.springboot.blog.exception.ResourceNotFoundException;
 import com.springboot.blog.repository.CommentRepository;
 import com.springboot.blog.repository.PostRepository;
 import com.springboot.blog.service.CommentService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,10 +24,12 @@ import java.util.stream.Collectors;
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final ModelMapper mapper;
 
-    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository, PostRepository postRepository, ModelMapper mapper) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -111,22 +114,30 @@ public class CommentServiceImpl implements CommentService {
 
     // Convert Entity into DTO
     private CommentDto mapToDto(Comment comment){
-        CommentDto commentDto = new CommentDto();
+        // With Model Mapper
+        CommentDto commentDto = mapper.map(comment, CommentDto.class);
+
+        // Without Model Mapper
+        /*CommentDto commentDto = new CommentDto();
         commentDto.setId(comment.getId());
         commentDto.setName(comment.getName());
         commentDto.setEmail(comment.getEmail());
-        commentDto.setBody(comment.getBody());
+        commentDto.setBody(comment.getBody());*/
 
         return commentDto;
     }
 
     // Convert DTO into Entitu
     private Comment mapToEntity(CommentDto commentDto){
-        Comment comment = new Comment();
+        // With Model Mapper
+        Comment comment = mapper.map(commentDto, Comment.class);
+
+        // Without Model Mapper
+        /*Comment comment = new Comment();
         comment.setId(commentDto.getId());
         comment.setName(commentDto.getName());
         comment.setEmail(commentDto.getEmail());
-        comment.setBody(commentDto.getBody());
+        comment.setBody(commentDto.getBody());*/
 
         return comment;
     }

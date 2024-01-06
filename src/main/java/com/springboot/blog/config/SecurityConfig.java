@@ -1,25 +1,32 @@
 package com.springboot.blog.config;
 
+import com.springboot.blog.security.JwtAuthenticationEntryPoint;
+import com.springboot.blog.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
     private UserDetailsService userDetailsService;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAuthenticationFilter authenticationFilter;
 
-    public SecurityConfig(UserDetailsService userDetailsService) {
+    public SecurityConfig(UserDetailsService userDetailsService, JwtAuthenticationEntryPoint authenticationEntryPoint, JwtAuthenticationFilter authenticationFilter) {
         this.userDetailsService = userDetailsService;
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.authenticationFilter = authenticationFilter;
     }
 
     // It used to encode password on the API
@@ -38,15 +45,30 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf((csrf) -> csrf.disable())
+                // Definition of access rules for each routes
                 .authorizeHttpRequests((authorize) ->
                        /* authorize.anyRequest().authenticated()*/
+                        // Authorization of GET request matching to the api/** pattern
                         authorize.requestMatchers(HttpMethod.GET, "api/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
+                                // All other request excluding the 2 patterns below needs to be authenticated requests
                                 .anyRequest().authenticated()
 
+                ).exceptionHandling(
+                        // Define JwtAuthenticationEntryPoint like entrypoint of request to manage authentication errors
+                        exception ->
+                                exception.authenticationEntryPoint(authenticationEntryPoint)
                 )
-                .httpBasic(Customizer.withDefaults());
+                .sessionManagement(
+                        /* Configuration of Spring Security to not create HTTP Session. Because we use JWT Token
+                         to authenticate user and not session based on cookies like */
+                        session ->
+                                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
 
+        /* Add JwtAuthenticationFilter before the standard filter. This allows my custom filter is apply to each incomming request and
+        allows the extraction and validation of JWT Token before requests reach other parts of your application. */
+        http.addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

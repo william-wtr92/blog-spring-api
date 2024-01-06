@@ -1,6 +1,7 @@
 package com.springboot.blog.controller;
 
 
+import com.springboot.blog.dto.JwtAuthResponse;
 import com.springboot.blog.dto.LoginDto;
 import com.springboot.blog.dto.RegisterDto;
 import com.springboot.blog.service.AuthService;
@@ -23,8 +24,9 @@ public class AuthController {
 
     // We can use multiple url binding for the same action, use value = {"whatever", "whatever"}
     @PostMapping(value = {"/login", "/signin"})
-    public ResponseEntity<String> login(@Valid  @RequestBody LoginDto loginDto){
-        String response = authService.login(loginDto);
+    public ResponseEntity<JwtAuthResponse> login(@Valid  @RequestBody LoginDto loginDto){
+        String token = authService.login(loginDto);
+        JwtAuthResponse response = new JwtAuthResponse(token);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -21,4 +21,5 @@ public class PostDto {
     @NotEmpty(message = "Content should not be null or empty")
     private String content;
     private Set<CommentDto> comments;
+    private Long categoryId;
 }

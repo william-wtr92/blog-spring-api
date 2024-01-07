@@ -1,7 +1,9 @@
 package com.springboot.blog.controller;
 
 import com.springboot.blog.dto.CategoryDto;
+import com.springboot.blog.dto.CategoryResponse;
 import com.springboot.blog.service.CategoryService;
+import com.springboot.blog.utils.AppConstants;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,10 +28,23 @@ public class CategoryController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // Get Category by Id
+    // Get Category by id
     @GetMapping("/{id}")
     public ResponseEntity<CategoryDto> getCategory(@PathVariable("id") Long categoryId){
         CategoryDto response = categoryService.getCategory(categoryId);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // Get all categories with pagination
+    @GetMapping
+    public ResponseEntity<CategoryResponse> getAllCategories(
+            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "sortOrder", defaultValue = AppConstants.DEFAULT_SORT_ORDER, required = false) String sortOrder
+    ){
+        CategoryResponse response = categoryService.getAllCategories(pageNo, pageSize, sortBy, sortOrder);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -2,6 +2,8 @@ package com.springboot.blog.config;
 
 import com.springboot.blog.security.JwtAuthenticationEntryPoint;
 import com.springboot.blog.security.JwtAuthenticationFilter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,6 +20,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableMethodSecurity
+// Provide the schema used in application to Swagger
+@SecurityScheme(
+        name = "Bear Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SecurityConfig {
     private UserDetailsService userDetailsService;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
@@ -51,7 +60,11 @@ public class SecurityConfig {
                         // Authorization of GET request matching to the api/** pattern
                         authorize.requestMatchers(HttpMethod.GET, "api/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
-                                // All other request excluding the 2 patterns below needs to be authenticated requests
+                                // Add permission to Get swagger pages in web http://localhost:8080/swagger-ui/index.html#/
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                // Add permission to Get JSON format documentation http://localhost:8080/v3/api-docs
+                                .requestMatchers("/v3/api-docs/**").permitAll()
+                                // All other request excluding the 4 patterns below needs to be authenticated requests
                                 .anyRequest().authenticated()
 
                 ).exceptionHandling(

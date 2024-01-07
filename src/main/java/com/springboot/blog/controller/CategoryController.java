@@ -4,6 +4,8 @@ import com.springboot.blog.dto.CategoryDto;
 import com.springboot.blog.dto.CategoryResponse;
 import com.springboot.blog.service.CategoryService;
 import com.springboot.blog.utils.AppConstants;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/categories")
+@Tag(
+        name = "CRUD Rest API for Category Resource"
+)
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -20,6 +25,9 @@ public class CategoryController {
     }
 
     // Create a new category, secure with ADMIN Role Authorization
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto){
@@ -50,6 +58,9 @@ public class CategoryController {
     }
 
     // Update Category by id
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable("id") Long categoryId,
@@ -60,6 +71,9 @@ public class CategoryController {
     }
 
     // Delete Category by id
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable("id") Long categoryId){

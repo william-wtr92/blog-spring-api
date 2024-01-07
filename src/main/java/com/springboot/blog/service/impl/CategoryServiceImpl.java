@@ -3,7 +3,6 @@ package com.springboot.blog.service.impl;
 import com.springboot.blog.dto.CategoryDto;
 import com.springboot.blog.dto.CategoryResponse;
 import com.springboot.blog.entity.Category;
-import com.springboot.blog.entity.Post;
 import com.springboot.blog.exception.ResourceNotFoundException;
 import com.springboot.blog.repository.CategoryRepository;
 import com.springboot.blog.service.CategoryService;
@@ -75,6 +74,23 @@ public class CategoryServiceImpl implements CategoryService {
         response.setLast(categories.isLast());
 
         return response;
+    }
+
+    @Override
+    public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto) {
+        // Check if CategoryId exist in database
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
+                new ResourceNotFoundException("Category", "id", categoryId)
+        );
+
+        // Add new value to update the category found below
+        category.setName(categoryDto.getName());
+        category.setDescription(categoryDto.getDescription());
+
+        // Save the updated category into database
+        Category updatedCategory = categoryRepository.save(category);
+
+        return mapToDto(updatedCategory);
     }
 
     // Map Category Java Object to DTO

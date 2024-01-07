@@ -7,4 +7,5 @@ public interface CategoryService {
     CategoryDto createCategory(CategoryDto categoryDto);
     CategoryDto getCategory(Long categoryId);
     CategoryResponse getAllCategories(int pageNo, int pageSize, String sortBy, String sortOrder);
+    CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto);
 }

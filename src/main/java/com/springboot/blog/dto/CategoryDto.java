@@ -19,5 +19,5 @@ public class CategoryDto {
     @Size(min = 10, message = "Category description must have 10 characters minimum")
     private String description;
 
-    private List<Post> posts;
+    private List<PostDto> posts;
 }

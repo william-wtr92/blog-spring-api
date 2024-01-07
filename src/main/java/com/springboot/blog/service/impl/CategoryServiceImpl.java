@@ -2,6 +2,7 @@ package com.springboot.blog.service.impl;
 
 import com.springboot.blog.dto.CategoryDto;
 import com.springboot.blog.entity.Category;
+import com.springboot.blog.exception.ResourceNotFoundException;
 import com.springboot.blog.repository.CategoryRepository;
 import com.springboot.blog.service.CategoryService;
 import org.modelmapper.ModelMapper;
@@ -27,6 +28,15 @@ public class CategoryServiceImpl implements CategoryService {
 
         // Return into DTO object the response to the client
         return mapToDto(newCategory);
+    }
+
+    @Override
+    public CategoryDto getCategory(Long categoryId) {
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
+                new ResourceNotFoundException("Category", "id", categoryId)
+        );
+
+        return mapToDto(category);
     }
 
     // Map Category Java Object to DTO

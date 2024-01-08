@@ -4,16 +4,18 @@ import com.springboot.blog.dto.ProductDto;
 import com.springboot.blog.dto.ProductResponse;
 import com.springboot.blog.service.ProductService;
 import com.springboot.blog.utils.AppConstants;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("api/products")
+@Tag(
+        name = "CRUD Rest API for Product Resource"
+)
 public class ProductController {
     private final ProductService productService;
 

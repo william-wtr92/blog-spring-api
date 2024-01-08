@@ -44,6 +44,7 @@ public class ProductServiceImpl implements ProductService {
         // Parse each element of productList into ProductDto
         List<ProductDto> productDtoList = productList.stream().map(product -> mapper.map(product, ProductDto.class)).collect(Collectors.toList());
 
+        // Construct the response the client
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDtoList);
         productResponse.setPageNo(products.getNumber());

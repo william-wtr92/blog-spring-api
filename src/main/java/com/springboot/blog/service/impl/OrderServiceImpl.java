@@ -25,7 +25,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     /* @Transactional is here to execute the operations in method in 1 time, orderRepository.save(order) &
-    orderRepository.save(order) are executed in same operation not 2 separated */
+    paymentRepository.save(payment) are executed in same operation not 2 separated */
     @Transactional
     public OrderResponse placeOrder(OrderRequest orderRequest) {
         // Get the order from the body of request
@@ -48,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
         // Add a linked orderId to the Payment
         payment.setOrderId(order.getId());
         // Save the payment into database
-        orderRepository.save(order);
+        paymentRepository.save(payment);
 
         // Creation of the back response
         OrderResponse response = new OrderResponse();

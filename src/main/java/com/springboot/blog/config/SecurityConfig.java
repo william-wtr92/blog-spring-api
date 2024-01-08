@@ -57,6 +57,7 @@ public class SecurityConfig {
                 // Definition of access rules for each routes
                 .authorizeHttpRequests((authorize) ->
                        /* authorize.anyRequest().authenticated()*/
+
                         // Authorization of GET request matching to the api/** pattern
                         authorize.requestMatchers(HttpMethod.GET, "api/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
@@ -64,7 +65,9 @@ public class SecurityConfig {
                                 .requestMatchers("/swagger-ui/**").permitAll()
                                 // Add permission to Get JSON format documentation http://localhost:8080/v3/api-docs
                                 .requestMatchers("/v3/api-docs/**").permitAll()
-                                // All other request excluding the 4 patterns below needs to be authenticated requests
+                                // Add permission to reach the orders routes to make payment
+                                .requestMatchers("/api/orders/**").permitAll()
+                                // All other request excluding the 5 patterns below needs to be authenticated requests
                                 .anyRequest().authenticated()
 
                 ).exceptionHandling(

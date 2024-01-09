@@ -5,9 +5,9 @@
 Welcome to the Spring Blog REST API, a robust and secure platform built using Spring Boot. This API is designed following the MVC architecture, ensuring a clean separation of concerns and easy maintainability. It incorporates JWT (JSON Web Token) for secure authentication and is documented with Swagger for ease of use.
 
 ## Features
-MVC Architecture: Organized codebase with Model-View-Controller pattern for efficient development and maintenance.
-JWT Authentication: Secure authentication mechanism using JSON Web Tokens.
-Swagger Documentation: Comprehensive and interactive API documentation using Swagger.
+- MVC Architecture: Organized codebase with Model-View-Controller pattern for efficient development and maintenance.
+- JWT Authentication: Secure authentication mechanism using JSON Web Tokens.
+- Swagger Documentation: Comprehensive and interactive API documentation using Swagger.
 
 ## Getting Started
 
